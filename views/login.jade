@@ -1,0 +1,20 @@
+extends layout
+block content
+
+  h2 Login
+  - if ('undefined' !== typeof errors && errors.length)
+    ul#errors
+      - each error in errors
+        li.error= error
+  form.well(action='/login', method='POST')
+    #login
+      label(for=everyauth.password.loginFormFieldName) Login
+      input.span3(type='text', name=everyauth.password.loginFormFieldName, value=login)
+    #password
+      label(for=everyauth.password.passwordFormFieldName) Password
+      input.span3(type='password', name=everyauth.password.passwordFormFieldName)
+    #submit
+      input.btn(type='submit') Submit
+    br
+    span.help-block Not registered?
+    a(href='/register') Register
