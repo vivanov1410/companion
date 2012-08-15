@@ -1,20 +1,22 @@
 {
   "name": "companion",
-  "version": "0.0.1-4",
+  "version": "0.0.1-5",
   "dependencies": {
-    "express": "3.0.0rc2",
-    "jade": "*",
-    "stylus": "*",
+    "express": ">= 3.0.0rc2",
+    "jade": ">= 0.27.0",
+    "stylus": ">= 0.28.2",
     "coffee-script": "1.3.3",
-    "winston": "*",
-    "everyauth": "*",
-    "cradle": "*",
+    "winston": ">= 0.6.2",
+    "cradle": ">= 0.6.3",
     "connect-redis": ">= 1.4.1",
-    "now": ">= 0.8.1"
+    "now": ">= 0.8.1",
+    "passport": ">= 0.1.12",
+    "passport-local": ">= 0.1.6",
+    "connect-flash": ">= 0.1.0"
   },
   "devDependencies": {
-    "mocha": "*",
-    "should": "*",
+    "mocha": ">= 1.3.0",
+    "should": ">= 1.1.0",
     "nodemon": "*"
   },
   "engines": {

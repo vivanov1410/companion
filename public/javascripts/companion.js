@@ -3,16 +3,67 @@
 
   $(function() {
     $('#datepicker').datepicker();
-    return $('#country').change(function() {
+    $('#datepicker').datepicker('option', 'dateFormat', 'yy/mm/dd');
+    $('#country').change(function() {
       var selected;
       selected = $('#country').val();
       switch (selected) {
         case 'Canada':
-          return $('#state').html('<option value=\'State\'>State</option>\n<option value=\'BC\'>BC</option>\n<option value=\'AB\'>AB</option>');
+          $('#state').html('<option value=\'State\'>State</option>\n<option value=\'AB\'>AB</option>\n<option value=\'BC\'>BC</option>\n<option value=\'MB\'>MB</option>\n<option value=\'NB\'>NB</option>\n<option value=\'NL\'>NL</option>\n<option value=\'NS\'>NS</option>\n<option value=\'NT\'>NT</option>\n<option value=\'NU\'>NU</option>\n<option value=\'ON\'>ON</option>\n<option value=\'PE\'>PE</option>\n<option value=\'QC\'>QC</option>\n<option value=\'SK\'>SK</option>\n<option value=\'YT\'>YT</option>');
+          return $('#units').html("<option value='L'>L</option>");
         case 'USA':
-          return $('#state').html('<option value=\'State\'>State</option>\n<option value=\'WA\'>WA</option>\n<option value=\'NY\'>NY</option>');
+          $('#state').html('<option value=\'State\'>State</option>\n<option value=\'WA\'>WA</option>\n<option value=\'NY\'>NY</option>');
+          return $('#units').html("<option value='Gal'>Gal</option>");
       }
     });
+    $('#submit-fuel').click(function() {
+      var fuel_receipt;
+      fuel_receipt = {
+        type: 'fuel receipt',
+        date: new Date(Date.parse($('#datepicker').val().replace(/\//g, ' '))),
+        country: $('#country').val(),
+        state: $('#state').val(),
+        quantity: $('#quantity').val(),
+        units: $('#units').val()
+      };
+      return now.submit_fuel_receipt(fuel_receipt);
+    });
+    $('#submit-stop').click(function() {
+      var stop;
+      stop = {
+        type: 'stop',
+        date: new Date(Date.parse($('#datepicker').val().replace(/\//g, ' '))),
+        country: $('#country').val(),
+        state: $('#state').val(),
+        address: $('#address').val(),
+        postal_code: $('#postal-code').val()
+      };
+      return now.submit_stop(stop);
+    });
+    now.update_fuel_receipts = function(receipts) {
+      var date, receipt, row, rows, _i, _len;
+      receipts = receipts.reverse();
+      rows = '';
+      for (_i = 0, _len = receipts.length; _i < _len; _i++) {
+        receipt = receipts[_i];
+        date = new Date(receipt.value.date).toLocaleDateString();
+        row = "<tr>\n  <td>" + date + "</td>\n  <td>" + receipt.value.country + "</td>\n  <td>" + receipt.value.state + "</td>\n  <td>" + receipt.value.quantity + "</td>\n  <td>" + receipt.value.units + "</td>\n</tr>";
+        rows += row;
+      }
+      return $('tbody').html(rows);
+    };
+    return now.update_stops = function(stops) {
+      var date, row, rows, stop, _i, _len;
+      stops = stops.reverse();
+      rows = '';
+      for (_i = 0, _len = stops.length; _i < _len; _i++) {
+        stop = stops[_i];
+        date = new Date(stop.value.date).toLocaleDateString();
+        row = "<tr>\n  <td>" + date + "</td>\n  <td>" + stop.value.country + "</td>\n  <td>" + stop.value.state + "</td>\n  <td>" + stop.value.address + "</td>\n  <td>" + stop.value.postal_code + "</td>\n</tr>";
+        rows += row;
+      }
+      return $('tbody').html(rows);
+    };
   });
 
 }).call(this);

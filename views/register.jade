@@ -1,20 +1,18 @@
 extends layout
 block content
 
-  h2 Register
-  - if ('undefined' !== typeof errors && errors.length)
-    ul#errors
-      - each error in errors
-        li.error= error
-  form.well(action='/register', method='POST')
-    #login
-      label(for=everyauth.password.loginFormFieldName) Login
-      input.span3(type='text', name=everyauth.password.loginFormFieldName, value=userParams[everyauth.password.loginFormFieldName])
-    #email
-      label(for=everyauth.password.emailFormFieldName) Email
-      input.span3(type='text', name='email', value=userParams['email'])
-    #password
-      label(for=everyauth.password.passwordFormFieldName) Password
-      input.span3(type='password', name=everyauth.password.passwordFormFieldName)
-    #submit
-      input.btn(type='submit') Register
+  h2 Create New Account
+  - if (message.length)
+    p.alert.alert-error=message
+  form#register-form.well(action='/register', method='POST',accept-charset='UTF-8')
+    label Username:
+    input#username(name='username', type='text', size=30)
+    label Email:
+    input#email(name='email', type='email', size=30)
+    label Password:
+    input#password(name='password', type='password', size=30)
+    label Confirm Password:
+    input#confirm-password(name='confirm_password', type='password', size=30)
+    #msg.alert.alert-error.hide
+    br
+    input#signup-button.btn.btn-success(type='submit', value='Sign Up')

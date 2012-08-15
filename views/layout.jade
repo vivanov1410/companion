@@ -16,13 +16,21 @@ html
             span.icon-bar
             span.icon-bar
           a.brand(href='../') Companion
-          - if (everyauth.loggedIn)
-            .nav-collapse
+          .nav-collapse
+            - if (user !== undefined)
               ul.nav
                 li: a(href='/fuel') Fuel
                 li: a(href='/stops') Stops
+                li: a(href='/invoices') Invoices
               ul.nav.pull-right
-                li: a(href='/logout') logout
+                li: a(href='/account') Hi, #{user.username}
+                li.divider-vertical
+                li: a(href='/logout') Logout
+            - else
+              ul.nav.pull-right
+                li: a(href='/register') Register
+                li.divider-vertical
+                li: a(href='/login') Login
 
     block content
 
@@ -30,5 +38,5 @@ html
     script(src='/libs/jquery-ui.js')
     script(src='/libs/bootstrap/js/bootstrap.min.js')
     //script(src='/libs/live.js')
-    script(src='http://localhost:3000/nowjs/now.js')
+    script(src='/nowjs/now.js')
     script(src='/javascripts/companion.js')
