@@ -1,0 +1,43 @@
+extends layout
+block content
+
+  .container
+    .row
+      .hero-unit
+        form
+          input#datepicker.span3(type='text', placeholder='Date')
+          br
+          select#country.span3(name='country')
+            option(value='Country') Country
+            option(value='Canada') Canada
+            option(value='USA') USA
+          br
+          select#state.span3
+            option(value='State') State
+          br
+          input#address.span2(type='text', placeholder='Address')
+          br
+          input#postal-code.span2(type='text', placeholder='Postal Code')
+          br
+          a#submit-stop.btn.btn-success.btn-large.answer Submit
+
+      .well
+        table.table.table-striped
+          thead
+            tr
+              th Date
+              th Country
+              th State
+              th Address
+              th Postal Code
+          tbody
+            - if (stops !== undefined && stops.length)
+              - stops = stops.reverse()
+              - each stop in stops
+                tr
+                  - var date = new Date(stop.value.date).toLocaleDateString()
+                  td= date
+                  td= stop.value.country
+                  td= stop.value.state
+                  td= stop.value.address
+                  td= stop.value.postal_code

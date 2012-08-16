@@ -117,6 +117,12 @@ app.get '/stops', (req, res) ->
     stops = db_res
     res.render 'stops', user: req.user, stops: stops
 
+app.get '/invoices', (req, res) ->
+  db = conn.database app.set 'db_documents'
+  db.view 'documents/all_invoices', (err, db_res) ->
+    invoices = db_res
+    res.render 'invoices', user: req.user, invoices: invoices
+
 http_server = http.createServer(app).listen app.get("port"), ->
   console.log "Express server listening on port " + app.get("port")
 
