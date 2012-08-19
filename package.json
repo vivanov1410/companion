@@ -1,6 +1,6 @@
 {
   "name": "companion",
-  "version": "0.0.1-5",
+  "version": "0.0.1-6",
   "dependencies": {
     "express": ">= 3.0.0rc2",
     "jade": ">= 0.27.0",

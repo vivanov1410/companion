@@ -15,7 +15,7 @@ LocalStrategy = require('passport-local').Strategy
 app = express()
 
 passport.serializeUser (user, done) ->
-  done null, user.id
+  done null, user.username
 
 passport.deserializeUser (id, done) ->
   find_user_by_username id, (err, user) ->
@@ -56,22 +56,24 @@ app.configure ->
 app.configure 'development', ->
   app.use express.errorHandler()
   app.set 'db_uri', 'localhost:5984'
-  app.set 'db_users', 'co_users'
-  app.set 'db_documents', 'co_documents'
+  app.set 'db_name', 'companion'
 
 app.configure 'production', ->
     app.use express.errorHandler()
     app.set 'db_uri', 'http://exilium.iriscouch.com'
-    app.set 'db_users', 'co_users'
-    app.set 'db_documents', 'co_documents'
-
+    app.set 'db_name', 'companion'
 
 # DB Connection
 conn = new cradle.Connection app.set 'db_uri'
-#db = conn.database app.set 'db-users'
+db = conn.database app.set 'db_name'
 
 app.get '/', (req, res) ->
-  res.render 'index', user: req.user
+  if app.settings.env is 'development'
+    user =
+      id: 'slava'
+      username: 'slava'
+    req.logIn user, (err) ->
+      res.render 'index', user: req.user
 
 app.get '/login', (req, res) ->
   res.render 'login', user: req.user, message: req.flash('error')
@@ -86,16 +88,18 @@ app.get '/register', (req, res) ->
 
 app.post '/register', (req, res, next) ->
   data = req.body
-  db = conn.database app.set 'db_users'
   db.get data.username, (err, doc) ->
       if doc
-        res.render 'register', message: 'Username is in use', user: req.user, exercises: exercises
+        res.render 'register', message: 'Username is in use', user: req.user
       else
         if data.password isnt data.confirm_password
-          res.render 'register', message: 'Password does not match', user: req.user, exercises: exercises
+          res.render 'register', message: 'Password does not match', user: req.user
         else
           delete data.confirm_password;
-          db.save data.username, data, (db_err, db_res) ->
+          db.save data.username
+            type: 'user'
+            meta: data
+          , (db_err, db_res) ->
             user = data
             user['id'] = data.username
             req.logIn user, (err) ->
@@ -105,21 +109,18 @@ app.get '/logout', (req, res) ->
   req.logout();
   res.redirect '/'
 
-app.get '/fuel', (req, res) ->
-  db = conn.database app.set 'db_documents'
-  db.view 'documents/all_fuel_receipts', (err, db_res) ->
-    fuel_receipts = db_res
-    res.render 'fuel', user: req.user, fuel_receipts: fuel_receipts
+app.get '/expenses', (req, res) ->
+  db.view 'expenses/all', (err, db_res) ->
+    expenses = db_res
+    res.render 'expenses', user: req.user, expenses: expenses
 
 app.get '/stops', (req, res) ->
-  db = conn.database app.set 'db_documents'
-  db.view 'documents/all_stops', (err, db_res) ->
+  db.view 'stops/all', (err, db_res) ->
     stops = db_res
     res.render 'stops', user: req.user, stops: stops
 
 app.get '/invoices', (req, res) ->
-  db = conn.database app.set 'db_documents'
-  db.view 'documents/all_invoices', (err, db_res) ->
+  db.view 'invoices/all', (err, db_res) ->
     invoices = db_res
     res.render 'invoices', user: req.user, invoices: invoices
 
@@ -128,12 +129,14 @@ http_server = http.createServer(app).listen app.get("port"), ->
 
 everyone = nowjs.initialize(http_server)
 
-everyone.now.submit_fuel_receipt = (receipt) ->
-  db = conn.database app.set 'db_documents'
-  db.save receipt, (err, res) ->
-    db.view 'documents/all_fuel_receipts', (err, db_res) ->
-      fuel_receipts = db_res
-      everyone.now.update_fuel_receipts fuel_receipts
+everyone.now.submit_expense = (expense) ->
+  db.save
+    type: 'expense'
+    meta: expense
+    , (err, res) ->
+      db.view 'expenses/all', (err, db_res) ->
+        expenses = db_res
+        everyone.now.update_expenses expenses
 
 everyone.now.submit_stop = (stop) ->
   db = conn.database app.set 'db_documents'
@@ -143,7 +146,6 @@ everyone.now.submit_stop = (stop) ->
       everyone.now.update_stops stops
 
 find_user_by_username = (username, fn) ->
-  db = conn.database app.set 'db_users'
   db.get username, (err, doc) ->
-    fn err, doc
+    fn err, doc.meta
 

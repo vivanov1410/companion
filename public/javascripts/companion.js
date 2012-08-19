@@ -4,6 +4,14 @@
   $(function() {
     $('#datepicker').datepicker();
     $('#datepicker').datepicker('option', 'dateFormat', 'yy/mm/dd');
+    $('#category').change(function() {
+      var selected;
+      selected = $('#category').val();
+      switch (selected) {
+        case 'Fuel':
+          return $('#fuel-details').show('slow');
+      }
+    });
     $('#country').change(function() {
       var selected;
       selected = $('#country').val();
@@ -16,17 +24,21 @@
           return $('#units').html("<option value='Gal'>Gal</option>");
       }
     });
-    $('#submit-fuel').click(function() {
-      var fuel_receipt;
-      fuel_receipt = {
-        type: 'fuel receipt',
+    $('#submit-expense').click(function() {
+      var expense;
+      expense = {
+        category: $('#category').val().toLowerCase(),
         date: new Date(Date.parse($('#datepicker').val().replace(/\//g, ' '))),
-        country: $('#country').val(),
-        state: $('#state').val(),
-        quantity: $('#quantity').val(),
-        units: $('#units').val()
+        amount: $('#amount').val(),
+        currency: $('#currency').val()
       };
-      return now.submit_fuel_receipt(fuel_receipt);
+      if (expense.category === 'fuel') {
+        expense['country'] = $('#country').val();
+        expense['state'] = $('#state').val();
+        expense['quantity'] = $('#quantity').val();
+        expense['units'] = $('#units').val();
+      }
+      return now.submit_expense(expense);
     });
     $('#submit-stop').click(function() {
       var stop;
@@ -40,14 +52,14 @@
       };
       return now.submit_stop(stop);
     });
-    now.update_fuel_receipts = function(receipts) {
-      var date, receipt, row, rows, _i, _len;
-      receipts = receipts.reverse();
+    now.update_expenses = function(expenses) {
+      var date, expense, row, rows, _i, _len;
+      expenses = expenses.reverse();
       rows = '';
-      for (_i = 0, _len = receipts.length; _i < _len; _i++) {
-        receipt = receipts[_i];
-        date = new Date(receipt.value.date).toLocaleDateString();
-        row = "<tr>\n  <td>" + date + "</td>\n  <td>" + receipt.value.country + "</td>\n  <td>" + receipt.value.state + "</td>\n  <td>" + receipt.value.quantity + "</td>\n  <td>" + receipt.value.units + "</td>\n</tr>";
+      for (_i = 0, _len = expenses.length; _i < _len; _i++) {
+        expense = expenses[_i];
+        date = new Date(expense.value.date).toLocaleDateString();
+        row = "<tr>\n  <td>" + date + "</td>\n  <td>" + expense.value.category + "</td>\n  <td>" + expense.value.amount + "</td>\n  <td>" + expense.value.currency + "</td>\n</tr>";
         rows += row;
       }
       return $('tbody').html(rows);

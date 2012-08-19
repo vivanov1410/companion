@@ -1,0 +1,58 @@
+extends layout
+block content
+
+  .container
+    h2 Expenses
+    .row
+      .hero-unit
+        form
+          input#datepicker.span3(type='text', placeholder='Date')
+          br
+          select#category.span3(name='category')
+            option(value='Category') Category
+            option(value='Fuel') Fuel
+            option(value='Food') Food
+            option(value='Repair') Repair
+            option(value='Toll') Toll
+          br
+          input#amount.span3(type='text', placeholder='Amount')
+          br
+          select#currency.span2(name='currency')
+            option(value='CAD') CAD
+            option(value='USD') USD
+          #fuel-details.hide
+            br
+            select#country.span3(name='country')
+              option(value='Country') Country
+              option(value='Canada') Canada
+              option(value='USA') USA
+            br
+            select#state.span3
+              option(value='State') State
+            br
+            input#quantity.span2(type='text', placeholder='Qty')
+            br
+            select#units.span2
+              option(value='Units') Units
+          br
+          a#submit-expense.btn.btn-success.btn-large.answer Submit
+
+    .row
+      .well
+        table.table.table-striped
+          thead
+            tr
+              th Date
+              th Category
+              th Amount
+              th Currency
+          tbody
+            - if (expenses !== undefined && expenses.length)
+              - expenses = expenses.reverse()
+              - each expense in expenses
+                tr
+                  - var date = new Date(expense.value.date).toLocaleDateString()
+                  td= date
+                  td= expense.value.category
+                  td= expense.value.amount
+                  td= expense.value.currency
