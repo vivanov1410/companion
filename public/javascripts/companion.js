@@ -20,7 +20,7 @@
           $('#state').html('<option value=\'State\'>State</option>\n<option value=\'AB\'>AB</option>\n<option value=\'BC\'>BC</option>\n<option value=\'MB\'>MB</option>\n<option value=\'NB\'>NB</option>\n<option value=\'NL\'>NL</option>\n<option value=\'NS\'>NS</option>\n<option value=\'NT\'>NT</option>\n<option value=\'NU\'>NU</option>\n<option value=\'ON\'>ON</option>\n<option value=\'PE\'>PE</option>\n<option value=\'QC\'>QC</option>\n<option value=\'SK\'>SK</option>\n<option value=\'YT\'>YT</option>');
           return $('#units').html("<option value='L'>L</option>");
         case 'USA':
-          $('#state').html('<option value=\'State\'>State</option>\n<option value=\'WA\'>WA</option>\n<option value=\'NY\'>NY</option>');
+          $('#state').html('<option value=\'State\'>State</option>\n<option value=\'WA\'>WA</option>\n<option value=\'NY\'>NY</option>\n<option value=\'NY\'>CA</option>');
           return $('#units').html("<option value='Gal'>Gal</option>");
       }
     });

@@ -35,6 +35,7 @@ $ ->
           <option value='State'>State</option>
           <option value='WA'>WA</option>
           <option value='NY'>NY</option>
+          <option value='NY'>CA</option>
         '''
         $('#units').html "<option value='Gal'>Gal</option>"
 
